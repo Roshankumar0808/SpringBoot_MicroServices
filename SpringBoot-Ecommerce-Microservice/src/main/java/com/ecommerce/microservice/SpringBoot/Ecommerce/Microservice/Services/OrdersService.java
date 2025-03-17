@@ -1,7 +1,10 @@
 package com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Services;
 
+import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Clients.InventoryOpenFeignClient;
 import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Dto.OrderRequestDto;
 import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Entity.Orders;
+import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Entity.OrdersItem;
+import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Entity.OrdersStatusEnum;
 import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Repository.OrdersRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,7 @@ import java.util.Optional;
 public class OrdersService {
     private final OrdersRepo ordersRepo;
     private final ModelMapper modelMapper;
+    private final InventoryOpenFeignClient inventoryOpenFeignClient;
 
     public List<OrderRequestDto> getAllOrders(){
         log.info("Fetching All orders");
@@ -34,4 +38,15 @@ public class OrdersService {
 
     }
 
+    public OrderRequestDto createOrder(OrderRequestDto orderRequestDto) {
+        Double totalPrice= inventoryOpenFeignClient.reduceStocks(orderRequestDto);
+        Orders orders=modelMapper.map(orderRequestDto, Orders.class);
+        for(OrdersItem ordersItem:orders.getItems()){
+            ordersItem.setOrders(orders);
+        }
+        orders.setTotalprice(totalPrice);
+        orders.setOrdersStatusEnum(OrdersStatusEnum.CONFIRMED);
+        Orders savedOrder=ordersRepo.save(orders);
+        return modelMapper.map(savedOrder, OrderRequestDto.class);
+    }
 }

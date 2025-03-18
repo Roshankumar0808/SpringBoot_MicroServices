@@ -6,6 +6,9 @@ import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Entity.Order
 import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Entity.OrdersItem;
 import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Entity.OrdersStatusEnum;
 import com.ecommerce.microservice.SpringBoot.Ecommerce.Microservice.Repository.OrdersRepo;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -38,7 +41,11 @@ public class OrdersService {
 
     }
 
+    @CircuitBreaker(name="inventoryCircuitBreaker",fallbackMethod = "createOrderFallback")
+   // @Retry(name="inventoryRetry",fallbackMethod = "createOrderFallback")
+  //  @RateLimiter(name="inventoryRateLimiter",fallbackMethod = "createOrderFallback")
     public OrderRequestDto createOrder(OrderRequestDto orderRequestDto) {
+        log.info("Calling the create order method");
         Double totalPrice= inventoryOpenFeignClient.reduceStocks(orderRequestDto);
         Orders orders=modelMapper.map(orderRequestDto, Orders.class);
         for(OrdersItem ordersItem:orders.getItems()){
@@ -48,5 +55,10 @@ public class OrdersService {
         orders.setOrdersStatusEnum(OrdersStatusEnum.CONFIRMED);
         Orders savedOrder=ordersRepo.save(orders);
         return modelMapper.map(savedOrder, OrderRequestDto.class);
+    }
+
+    public OrderRequestDto createOrderFallback(OrderRequestDto orderRequestDto,Throwable throwable) {
+        log.error("Fallback occurred due to : {}",throwable.getMessage());
+        return new OrderRequestDto();
     }
 }

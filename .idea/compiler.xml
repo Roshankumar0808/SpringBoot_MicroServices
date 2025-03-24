@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="SpringBoot-Ecommerce-Microservice" />
         <module name="api-gateway" />
+        <module name="config-server" />
         <module name="discovery-service" />
         <module name="SpringBoot-Inventory-Service" />
       </profile>
@@ -19,6 +20,7 @@
       <module name="SpringBoot-Ecommerce-Microservice" options="-parameters" />
       <module name="SpringBoot-Inventory-Service" options="-parameters" />
       <module name="api-gateway" options="-parameters" />
+      <module name="config-server" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
     </option>
   </component>

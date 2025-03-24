@@ -1,5 +1,8 @@
 package com.ecommerce.microservice.SpringBoot.Inventory.Service.Config;
 
+import feign.Capability;
+import feign.micrometer.*;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,4 +20,8 @@ public class AppConfig {
         return RestClient.builder().build();
     }
 
+    @Bean
+    public Capability capability(final MeterRegistry registry) {
+        return new MicrometerCapability(registry);
+    }
 }

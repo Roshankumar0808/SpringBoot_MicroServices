@@ -16,7 +16,7 @@ Tracking the performance, latency, and flow of API calls using Zipkin. Gain deep
 <br>
 **Centralized Logging with ELK Stack :**
 <br>
-UtilizeD Elasticsearch, Logstash, and Kibana (ELK Stack) to aggregate logs across microservices. With Trade ID-based tracking, easily trace transactions, debug issues, and visualize logs in real time.
+Utilized Elasticsearch, Logstash, and Kibana (ELK Stack) to aggregate logs across microservices. With Trade ID-based tracking, easily trace transactions, debug issues, and visualize logs in real time.
 <br>
 ![alt text](https://github.com/Roshankumar0808/SpringBoot_MicroServices/blob/master/kibana_logs.png)
 <br>

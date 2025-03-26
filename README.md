@@ -2,6 +2,7 @@
 <br>
 Leveraging Eureka to enable seamless communication between microservices. With dynamic service registration and discovery, ensure high availability and resilience in your microservices architecture.
 <br>
+<br>
 ![alt text](https://github.com/Roshankumar0808/SpringBoot_MicroServices/blob/master/eureka_cloud.png)
 <br>
 <br>
